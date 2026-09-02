@@ -11,20 +11,48 @@ SKILL_DIR = Path(__file__).resolve().parents[1]
 
 
 class SkillContractTests(unittest.TestCase):
-    def test_chrome_is_default_and_opencli_is_optional(self) -> None:
+    def test_skill_is_plan_review_only(self) -> None:
         skill = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("Use the Codex Chrome plugin by default", skill)
-        self.assertIn("OpenCLI is optional and is not an installation prerequisite", skill)
-        self.assertNotIn("For text-only consultations, default to the wrapper", skill)
+        for required in (
+            "name: sol-high-plan-review",
+            "Codex = Plan Owner",
+            "Sol High = Independent Plan Critic",
+            "Maximum review rounds",
+            "3",
+            "PLAN FROZEN",
+            "Do not call Sol High again",
+        ):
+            self.assertIn(required, skill)
+
+    def test_mcp_is_single_browser_path(self) -> None:
+        skill = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
+        workflow = (SKILL_DIR / "references/mcp-workflow.md").read_text(encoding="utf-8")
+        self.assertIn("Chrome DevTools MCP only", skill)
+        self.assertIn("Model family = GPT-5.6 Sol", workflow)
+        self.assertIn("Reasoning     = High", workflow)
+        self.assertIn("Pro           # GPT-5.6 Sol Pro, not this workflow", workflow)
+        self.assertIn("Do not silently fall back", workflow)
 
     def test_required_public_files_exist(self) -> None:
         for relative in (
             "agents/openai.yaml",
-            "references/chrome-workflow.md",
-            "references/opencli-fallback.md",
+            "references/mcp-workflow.md",
             "references/context-packet-template.md",
+            "scripts/check_packet_safety.py",
+            "scripts/build_attachment_bundle.py",
         ):
             self.assertTrue((SKILL_DIR / relative).is_file(), relative)
+
+    def test_evals_cover_core_boundaries(self) -> None:
+        payload = json.loads((SKILL_DIR / "evals/evals.json").read_text(encoding="utf-8"))
+        ids = {case["id"] for case in payload["evals"]}
+        self.assertTrue({
+            "plan-review-default",
+            "skip-review-explicit",
+            "max-three-rounds",
+            "frozen-plan-exits-sol",
+            "mcp-unavailable-no-fallback",
+        }.issubset(ids))
 
     def test_no_personal_absolute_paths(self) -> None:
         for path in SKILL_DIR.rglob("*"):
@@ -32,31 +60,6 @@ class SkillContractTests(unittest.TestCase):
                 text = path.read_text(encoding="utf-8", errors="ignore")
                 for forbidden in ("/Users/" + "me/", "zhu" + "jinpeng", "deepsight_" + "vault"):
                     self.assertNotIn(forbidden, text, str(path))
-
-    def test_evals_route_normal_requests_to_chrome(self) -> None:
-        payload = json.loads((SKILL_DIR / "evals/evals.json").read_text(encoding="utf-8"))
-        for case in payload["evals"]:
-            self.assertIn("Chrome", case["expected_output"])
-
-    def test_chrome_workflow_has_atomic_upload_and_verified_composer_recovery(self) -> None:
-        workflow = (SKILL_DIR / "references/chrome-workflow.md").read_text(encoding="utf-8")
-        for required in (
-            "one `node_repl js` invocation",
-            'waitForEvent("filechooser")',
-            "chooser.setFiles",
-            "innerText()",
-            "在文本字段中显示",
-            "Show in text field",
-            "Never click Send with an empty or unverified packet",
-        ):
-            self.assertIn(required, workflow)
-
-    def test_chrome_workflow_blocks_duplicate_send_after_ambiguous_reset(self) -> None:
-        workflow = (SKILL_DIR / "references/chrome-workflow.md").read_text(encoding="utf-8")
-        for state in ("NOT_SENT", "SENT", "UNKNOWN"):
-            self.assertIn(f"`{state}`", workflow)
-        self.assertIn("Never create a fresh consultation or click Send again", workflow)
-        self.assertIn("mark the consultation incomplete instead of risking a duplicate", workflow)
 
 
 if __name__ == "__main__":
