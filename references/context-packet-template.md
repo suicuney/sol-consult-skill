@@ -1,57 +1,62 @@
-# GPT 5.6 Sol Pro Context Packet Template
+# Sol High Plan Review Packet
 
-Use this template when preparing a consultation packet.
+Use this packet only for executable-plan review before implementation.
 
 ````markdown
-CONTEXT_PACKET_V1
+SOL_HIGH_PLAN_REVIEW_V1
 
 ```json
 {
-  "task_id": "gpt56-sol-pro-consult-YYYYMMDD-HHMMSS",
-  "sentinel": "GPT56_SOL_PRO_RESULT_YYYYMMDD_HHMMSS",
-  "task_type": "architecture_review|business_consult|content_strategy|skill_design|risk_review|other",
-  "context_strategy": "problem_first_full_context",
-  "credential_status": "no_executable_credentials",
-  "context_hash": "<sha256 of markdown body>",
-  "required_output": [
-    "reasoning_brief",
-    "direct_judgment",
-    "biggest_flaw",
-    "specific_revisions",
-    "adoption_decision"
-  ]
+  "task_id": "sol-high-plan-review-YYYYMMDD-HHMMSS",
+  "sentinel": "SOL_HIGH_PLAN_REVIEW_RESULT_YYYYMMDD_HHMMSS",
+  "review_round": 1,
+  "max_review_rounds": 3,
+  "credential_status": "no_executable_credentials"
 }
 ```
 
-## TASK
+## USER REQUIREMENT
 
-## BACKGROUND
+## REPOSITORY FACTS
 
-## USER_INTENT
+## RESOLVED DECISIONS
 
-## LOCAL_JUDGMENT
+## EXECUTABLE PLAN
 
-## EVIDENCE
+## ACCEPTANCE CRITERIA
 
-## ATTEMPTS_SO_FAR
+## EXECUTION SLICES
 
-## OPTIONS
+## VERIFICATION STRATEGY
 
-## RISKS
+## RISKS / ONE-WAY DECISIONS
+
+## CODEX LOCAL JUDGMENT
 
 ## ASK
 
-Please act as a strict reviewer and deep reasoning partner. Find the biggest flaw first, then give the strongest revised path. Do not provide generic encouragement. Do not reveal hidden chain-of-thought; instead output a concise reasoning brief with assumptions, decision frame, evidence weighting, counterarguments, and tradeoffs.
+Review this executable plan as a strict independent plan critic.
 
-## RETURN_FORMAT
+Rules:
+- Find blocking flaws first.
+- Do not expand product scope.
+- Do not take ownership of the plan.
+- Distinguish real blockers from optional polish.
+- If a real product/architecture trade-off requires the user, say so explicitly.
+- Do not reveal hidden chain-of-thought; provide concise reasons and evidence instead.
 
-First line must be: GPT56_SOL_PRO_RESULT_YYYYMMDD_HHMMSS
+## RETURN FORMAT
 
-Then use:
-1. Reasoning brief: assumptions, frame, evidence, counterargument, tradeoffs
-2. Direct judgment
-3. Biggest flaw
-4. Required changes
-5. What to ignore
-6. Final adoption recommendation
+First line must be:
+
+SOL_HIGH_PLAN_REVIEW_RESULT_YYYYMMDD-HHMMSS
+
+Then return exactly these sections:
+
+1. Verdict: `PASS | REVISE | USER_DECISION_REQUIRED`
+2. Blocking Findings
+3. Non-blocking Suggestions
+4. Missing Evidence
+5. User Decisions Required
+6. Recommendation
 ````
