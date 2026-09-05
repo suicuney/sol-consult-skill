@@ -8,6 +8,24 @@
       "files": []
     },
     {
+      "id": "first-send-shows-chinese-plan",
+      "prompt": "准备把开发计划发给网页版 GPT 做 Sol High 评审。",
+      "expected_output": "Before the first browser Send, shows a concise Chinese plan summary with goal, key plan steps, and important risks, then asks for one send confirmation. It does not substitute packet/file size for the plan content.",
+      "files": []
+    },
+    {
+      "id": "revise-does-not-repeat-confirmation",
+      "prompt": "第一轮已经确认并发送，Sol High 返回 REVISE，Codex 已经可以自行吸收建议。",
+      "expected_output": "Codex applies Adopt/Reject/Modify and continues the next Sol review round automatically in the same verified conversation without asking the user to confirm Send again, unless a real user decision or blocker appears.",
+      "files": []
+    },
+    {
+      "id": "final-plan-summary-is-visible",
+      "prompt": "Sol High 评审已经收敛，没有需要用户决定的问题。",
+      "expected_output": "Returns a concise Chinese final execution-plan summary for visibility and does not request another confirmation before PLAN FROZEN.",
+      "files": []
+    },
+    {
       "id": "skip-review-explicit",
       "prompt": "这个任务不要 Sol 评审，直接按 Codex 方案继续。",
       "expected_output": "Skips Sol High plan review because the user explicitly disabled it; does not open ChatGPT Web or start a review loop.",
