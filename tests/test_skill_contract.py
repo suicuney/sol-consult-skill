@@ -24,6 +24,21 @@ class SkillContractTests(unittest.TestCase):
         ):
             self.assertIn(required, skill)
 
+    def test_user_sees_chinese_plan_once_before_send(self) -> None:
+        skill = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
+        workflow = (SKILL_DIR / "references/mcp-workflow.md").read_text(encoding="utf-8")
+        self.assertIn("【准备发送给 Sol High 的计划】", skill)
+        self.assertIn("ask for **one** confirmation", skill)
+        self.assertIn("do not ask the user to confirm every review round", skill)
+        self.assertIn("concise Chinese plan summary", workflow)
+        self.assertIn("do **not** require repeated user confirmation", workflow)
+
+    def test_final_plan_is_visible_without_second_confirmation(self) -> None:
+        skill = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("【最终执行计划】", skill)
+        self.assertIn("Do **not** request another confirmation", skill)
+        self.assertIn("final_plan_summary_zh", skill)
+
     def test_mcp_is_single_browser_path(self) -> None:
         skill = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
         workflow = (SKILL_DIR / "references/mcp-workflow.md").read_text(encoding="utf-8")
@@ -48,6 +63,9 @@ class SkillContractTests(unittest.TestCase):
         ids = {case["id"] for case in payload["evals"]}
         self.assertTrue({
             "plan-review-default",
+            "first-send-shows-chinese-plan",
+            "revise-does-not-repeat-confirmation",
+            "final-plan-summary-is-visible",
             "skip-review-explicit",
             "max-three-rounds",
             "frozen-plan-exits-sol",
