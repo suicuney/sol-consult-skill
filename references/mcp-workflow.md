@@ -44,9 +44,16 @@ Prefer fresh browser snapshots and semantic/accessible state over brittle hard-c
 2. Build the review packet from `context-packet-template.md`.
 3. Run `scripts/check_packet_safety.py` before browser submission.
 4. Upload only the minimum required artifacts. Use `scripts/build_attachment_bundle.py` when many text files need one reviewable bundle.
-5. Insert the complete packet into the ChatGPT composer.
-6. Verify the packet prefix, unique sentinel, model family, reasoning level, and required attachment names before Send.
-7. Send once.
+5. Before the first Send, show the user a concise Chinese plan summary with `目标 / 计划 / 重点风险`.
+6. Ask the user to confirm the first Send once.
+7. Insert the complete packet into the ChatGPT composer and verify the packet prefix, unique sentinel, model family, reasoning level, and required attachment names.
+8. Send once.
+
+Do not use packet character count, file size, or attachment size as a substitute for the Chinese plan summary.
+
+After the first Send is confirmed, later `REVISE` rounds in the same verified conversation do **not** require repeated user confirmation. Codex updates the plan, records `Adopt / Reject / Modify`, and continues when no real user decision is needed.
+
+Only interrupt the user for `USER_DECISION_REQUIRED`, authentication handoff, ambiguous Send state, or another genuine blocker.
 
 Do not inspect or export cookies, passwords, session databases, API keys, tokens, private keys, or unrelated authenticated browser data.
 
@@ -79,6 +86,8 @@ expected sentinel is present in that assistant turn
 ```
 
 Return the complete structured review to Codex. Codex then decides `Adopt / Reject / Modify` for every blocking recommendation that affects the next plan revision.
+
+When the review converges, also return a concise Chinese final-plan summary. It is visibility output, not another confirmation gate.
 
 ## Failure Rule
 
